@@ -1,5 +1,13 @@
 import numpy as np
 from src.knapsack import fitness, generate_population
+from src.config import NUMPY_RANDOM_GENERATOR
+
+CROSSOVER_MIN_POINT = 1
+DEFAULT_POP_SIZE = 50
+DEFAULT_GENERATIONS = 100
+DEFAULT_MUTATION_RATE = 0.05
+NUM_PARENTS = 2
+FITNESS_INVALID = 0
 
 def selection(population, values, weights, capacity):
     scores = [fitness(ind, values, weights, capacity) for ind in population]
@@ -8,22 +16,22 @@ def selection(population, values, weights, capacity):
         probabilities = [1 / len(scores)] * len(scores)
     else:
         probabilities = scores / total
-    selected = np.random.choice(len(population), size=2, replace=False, p=probabilities)
+    selected = NUMPY_RANDOM_GENERATOR.choice(len(population), size=NUM_PARENTS, replace=False, p=probabilities)
     return population[selected[0]], population[selected[1]]
 
 def crossover(parent1, parent2):
-    point = np.random.randint(1, len(parent1) - 1)
+    point = NUMPY_RANDOM_GENERATOR.integers(CROSSOVER_MIN_POINT, len(parent1) - 1)
     child1 = np.concatenate([parent1[:point], parent2[point:]])
     child2 = np.concatenate([parent2[:point], parent1[point:]])
     return child1, child2
 
 def mutate(individual, mutation_rate):
     for i in range(len(individual)):
-        if np.random.rand() < mutation_rate:
+        if NUMPY_RANDOM_GENERATOR.random() < mutation_rate:
             individual[i] = 1 - individual[i]
     return individual
 
-def genetic_algorithm(values, weights, capacity, pop_size=50, generations=100, mutation_rate=0.05):
+def genetic_algorithm(values, weights, capacity, pop_size=DEFAULT_POP_SIZE, generations=DEFAULT_GENERATIONS, mutation_rate=DEFAULT_MUTATION_RATE):
     population = generate_population(pop_size, len(values))
     best_solution = None
     best_fitness = 0
@@ -44,5 +52,5 @@ def genetic_algorithm(values, weights, capacity, pop_size=50, generations=100, m
                 best_solution = individual.copy()
 
     if best_solution is None:
-        return None, 0
+        return None, FITNESS_INVALID
     return best_solution, best_fitness
