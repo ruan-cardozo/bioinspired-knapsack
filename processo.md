@@ -2,8 +2,6 @@
 
 ## ✅ Estratégia adotada
 
-(Descreva como a equipe organizou o trabalho para não afetar o código original.)
-
 | Ação                            | Detalhes                                                       |
 | -------------------------------- | -------------------------------------------------------------- |
 | Fork do repositório original     | (Sim/Não - indicar link se aplicável)                          |
